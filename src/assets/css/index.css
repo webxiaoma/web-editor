@@ -1,0 +1,366 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+#editWarp {
+  margin: 30px;
+  width: 700px;
+  min-height: 200px;
+}
+.simple-editor-wrap {
+  width: 100%;
+  border: 1px solid #d6d6d6;
+}
+.simple-editor-wrap div,
+.simple-editor-wrap span,
+.simple-editor-wrap ul,
+.simple-editor-wrap li,
+.simple-editor-wrap a,
+.simple-editor-wrap i,
+.simple-editor-wrap button,
+.simple-editor-wrap p {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  text-decoration: none;
+}
+.simple-editor-wrap .simple-editor-header {
+  width: 100%;
+  min-height: 40px;
+  padding: 0px 4px;
+  border-bottom: 1px solid #e0e0e0;
+  background: #f3f3f3;
+}
+.simple-editor-wrap .simple-editor-header ul li {
+  list-style: none;
+}
+.simple-editor-wrap .simple-editor-header .simple-editor-ul {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+}
+.simple-editor-wrap .simple-editor-header .simple-editor-ul > li {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  margin: 1px 1px;
+}
+.simple-editor-wrap .simple-editor-header .simple-editor-ul > li .editor-a-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  text-align: center;
+  cursor: pointer;
+}
+.simple-editor-wrap .simple-editor-header .simple-editor-ul > li .editor-a-btn i {
+  color: #808080;
+}
+.simple-editor-wrap .simple-editor-header .simple-editor-ul > li .active {
+  background: #cecece;
+}
+.simple-editor-wrap .simple-editor-header .simple-editor-ul > li .active i {
+  color: #0c0c0c;
+}
+.simple-editor-wrap .simple-editor-header .simple-editor-ul > li:hover {
+  background: #e9e9e9;
+}
+.simple-editor-wrap .simple-editor-header .simple-editor-ul > li:hover .editor-a-btn i {
+  color: #3d3d3d;
+}
+.simple-editor-wrap .simple-editor-header .simple-editor-ul > li .simple-editor-ul-h {
+  display: none;
+  position: absolute;
+  z-index: 999;
+  top: 38px;
+  left: -20px;
+  width: 80px;
+  background: #fff;
+  border: 1px solid #d6d6d6;
+}
+.simple-editor-wrap .simple-editor-header .simple-editor-ul > li .simple-editor-ul-h li {
+  width: 100%;
+  padding: 4px 0;
+}
+.simple-editor-wrap .simple-editor-header .simple-editor-ul > li .simple-editor-ul-h li a {
+  display: block;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  color: #333;
+}
+.simple-editor-wrap .simple-editor-header .simple-editor-ul > li .simple-editor-ul-h li:hover {
+  background: #e9e9e9;
+}
+.simple-editor-wrap .simple-editor-header .simple-editor-ul > li .simple-editor-ul-h li:hover a {
+  color: #3d3d3d;
+}
+.simple-editor-wrap .simple-editor-header .simple-editor-ul > li .simple-editor-ul-h li:nth-of-type(1) a {
+  padding: 10px;
+  font-size: 16px;
+}
+.simple-editor-wrap .simple-editor-header .simple-editor-ul > li .simple-editor-wrap-bg {
+  display: none;
+  padding: 5px;
+  position: absolute;
+  z-index: 999;
+  top: 38px;
+  left: -45px;
+  background: #fff;
+  border: 1px solid #d6d6d6;
+}
+.simple-editor-wrap .simple-editor-header .simple-editor-ul > li .simple-editor-wrap-bg .simple-editor-ul-bg {
+  width: 124px;
+  height: 100%;
+  padding-bottom: 5px;
+}
+.simple-editor-wrap .simple-editor-header .simple-editor-ul > li .simple-editor-wrap-bg .simple-editor-ul-bg li {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  margin: 0 2px;
+  border: 1px solid #eee;
+}
+.simple-editor-wrap .simple-editor-header .simple-editor-ul > li .simple-editor-wrap-bg .simple-editor-ul-bg li a {
+  display: block;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  color: #333;
+}
+.simple-editor-wrap .simple-editor-header .simple-editor-ul > li .simple-editor-wrap-bg .simple-editor-ul-bg .input-color {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 30px;
+  margin-top: 4px;
+}
+.simple-editor-wrap .simple-editor-header .simple-editor-ul > li .simple-editor-wrap-bg .simple-editor-ul-bg .input-color input {
+  width: 50%;
+  outline: none;
+}
+.simple-editor-wrap .simple-editor-header .simple-editor-ul > li .simple-editor-wrap-bg .simple-editor-ul-bg .input-color p {
+  cursor: pointer;
+  padding: 2px 4px;
+  margin-left: 5px;
+  border: 1px solid #409eff;
+  background: #409eff;
+  border-radius: 4px;
+  color: #fff;
+  font-size: 12px;
+}
+.simple-editor-wrap .simple-editor-header .simple-editor-ul > li .simple-editor-wrap-bg .simple-editor-ul-bg .input-color p:active {
+  background: #278ff8;
+}
+.simple-editor-wrap .simple-editor-header .simple-editor-ul > li .simple-editor-wrap-color {
+  display: none;
+  padding: 5px;
+  position: absolute;
+  z-index: 999;
+  top: 38px;
+  left: -45px;
+  background: #fff;
+  border: 1px solid #d6d6d6;
+}
+.simple-editor-wrap .simple-editor-header .simple-editor-ul > li .simple-editor-wrap-color .simple-editor-ul-bg {
+  width: 124px;
+  height: 100%;
+  padding-bottom: 5px;
+}
+.simple-editor-wrap .simple-editor-header .simple-editor-ul > li .simple-editor-wrap-color .simple-editor-ul-bg li {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  margin: 0 2px;
+  border: 1px solid #eee;
+}
+.simple-editor-wrap .simple-editor-header .simple-editor-ul > li .simple-editor-wrap-color .simple-editor-ul-bg li a {
+  display: block;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  color: #333;
+}
+.simple-editor-wrap .simple-editor-header .simple-editor-ul > li .simple-editor-wrap-color .simple-editor-ul-bg .input-color {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 30px;
+  margin-top: 4px;
+}
+.simple-editor-wrap .simple-editor-header .simple-editor-ul > li .simple-editor-wrap-color .simple-editor-ul-bg .input-color input {
+  width: 50%;
+  outline: none;
+}
+.simple-editor-wrap .simple-editor-header .simple-editor-ul > li .simple-editor-wrap-color .simple-editor-ul-bg .input-color p {
+  cursor: pointer;
+  padding: 2px 4px;
+  margin-left: 5px;
+  border: 1px solid #409eff;
+  background: #409eff;
+  border-radius: 4px;
+  color: #fff;
+  font-size: 12px;
+}
+.simple-editor-wrap .simple-editor-header .simple-editor-ul > li .simple-editor-wrap-color .simple-editor-ul-bg .input-color p:active {
+  background: #278ff8;
+}
+.simple-editor-wrap .simple-editor-header .simple-editor-ul > li .simple-editor-ul-style {
+  display: none;
+  position: absolute;
+  z-index: 999;
+  top: 38px;
+  left: -20px;
+  width: 80px;
+  background: #fff;
+  border: 1px solid #d6d6d6;
+}
+.simple-editor-wrap .simple-editor-header .simple-editor-ul > li .simple-editor-ul-style li {
+  width: 100%;
+  padding: 4px 0;
+}
+.simple-editor-wrap .simple-editor-header .simple-editor-ul > li .simple-editor-ul-style li a {
+  display: block;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  color: #333;
+}
+.simple-editor-wrap .simple-editor-header .simple-editor-ul > li .simple-editor-ul-style li:hover {
+  background: #e9e9e9;
+}
+.simple-editor-wrap .simple-editor-header .simple-editor-ul > li .simple-editor-ul-style li:hover a {
+  color: #3d3d3d;
+}
+.simple-editor-wrap .simple-editor-header .simple-editor-ul > li .simple-editor-ul-style li:nth-of-type(1) a {
+  padding: 10px;
+  font-size: 16px;
+}
+.simple-editor-wrap .simple-editor-header .simple-editor-ul > li .simple-editor-ul-size {
+  display: none;
+  position: absolute;
+  z-index: 999;
+  top: 38px;
+  left: -20px;
+  width: 80px;
+  background: #fff;
+  border: 1px solid #d6d6d6;
+}
+.simple-editor-wrap .simple-editor-header .simple-editor-ul > li .simple-editor-ul-size li {
+  width: 100%;
+  padding: 4px 0;
+}
+.simple-editor-wrap .simple-editor-header .simple-editor-ul > li .simple-editor-ul-size li a {
+  display: block;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  color: #333;
+}
+.simple-editor-wrap .simple-editor-header .simple-editor-ul > li .simple-editor-ul-size li:hover {
+  background: #e9e9e9;
+}
+.simple-editor-wrap .simple-editor-header .simple-editor-ul > li .simple-editor-ul-size li:hover a {
+  color: #3d3d3d;
+}
+.simple-editor-wrap .simple-editor-header .simple-editor-ul > li .simple-editor-ul-size li:nth-of-type(1) a {
+  padding: 10px;
+  font-size: 16px;
+}
+.simple-editor-wrap .simple-editor-header .simple-editor-ul > li .simple-editor-link {
+  width: 300px;
+  padding: 10px;
+  position: absolute;
+  z-index: 999;
+  top: 39px;
+  left: -45px;
+  background: #fff;
+  border: 1px solid #d6d6d6;
+}
+.simple-editor-wrap .simple-editor-header .simple-editor-ul > li .simple-editor-link .simple-editor-wrap {
+  border: none;
+  color: #333;
+}
+.simple-editor-wrap .simple-editor-header .simple-editor-ul > li .simple-editor-link .simple-editor-wrap .simple-editor-link-header {
+  font-size: 16px;
+  border-bottom: 1px solid #eee;
+  padding: 4px;
+}
+.simple-editor-wrap .simple-editor-header .simple-editor-ul > li .simple-editor-link .simple-editor-wrap .simple-editor-link-text {
+  width: 100%;
+  height: 20px;
+  margin: 20px 0;
+}
+.simple-editor-wrap .simple-editor-header .simple-editor-ul > li .simple-editor-link .simple-editor-wrap .simple-editor-link-text input {
+  width: 100%;
+  height: 100%;
+  border: none;
+  outline: none;
+  border-bottom: 1px solid #ccc;
+}
+.simple-editor-wrap .simple-editor-header .simple-editor-ul > li .simple-editor-link .simple-editor-wrap .simple-editor-link-links {
+  width: 100%;
+  height: 20px;
+  margin: 20px 0;
+}
+.simple-editor-wrap .simple-editor-header .simple-editor-ul > li .simple-editor-link .simple-editor-wrap .simple-editor-link-links input {
+  width: 100%;
+  height: 100%;
+  border: none;
+  outline: none;
+  border-bottom: 1px solid #ccc;
+}
+.simple-editor-wrap .simple-editor-header .simple-editor-ul > li .simple-editor-link .simple-editor-wrap .simple-editor-link-btn {
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+}
+.simple-editor-wrap .simple-editor-header .simple-editor-ul > li .simple-editor-link .simple-editor-wrap .simple-editor-link-btn span {
+  cursor: pointer;
+  padding: 5px 10px;
+  margin-left: 5px;
+  border: 1px solid #409eff;
+  background: #409eff;
+  border-radius: 4px;
+  color: #fff;
+  font-size: 14px;
+}
+.simple-editor-wrap .simple-editor-header .simple-editor-ul > li .simple-editor-link .simple-editor-wrap .simple-editor-link-btn span:active {
+  background: #278ff8;
+}
+.simple-editor-wrap .simple-editor-header .simple-editor-ul > li .simple-editor-link .simple-editor-wrap .simple-editor-link-btn .delete {
+  border: 1px solid #f35050;
+  background: #f35050;
+}
+.simple-editor-wrap .simple-editor-header .simple-editor-ul > li .simple-editor-link .simple-editor-wrap .simple-editor-link-btn .delete:active {
+  background: #f03a3a;
+}
+.simple-editor-wrap .simple-editor-body {
+  outline: none;
+  min-height: 100px;
+  margin-top: 10px;
+  padding: 10px;
+}
+.simple-editor-wrap .simple-editor-body div,
+.simple-editor-wrap .simple-editor-body span,
+.simple-editor-wrap .simple-editor-body ul,
+.simple-editor-wrap .simple-editor-body li,
+.simple-editor-wrap .simple-editor-body a,
+.simple-editor-wrap .simple-editor-body i,
+.simple-editor-wrap .simple-editor-body button,
+.simple-editor-wrap .simple-editor-body p {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  text-decoration: none;
+}
+.simple-editor-wrap .simple-editor-body ul,
+.simple-editor-wrap .simple-editor-body ol {
+  margin-left: 30px;
+}
+.simple-editor-wrap .simple-editor-body blockquote {
+  border-left: 4px solid #ccc;
+  margin: 10px 0;
+  padding-left: 16px;
+}

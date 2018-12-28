@@ -1,0 +1,264 @@
+*{
+    margin:0;
+    padding:0;
+}
+
+#editWarp{
+    margin:30px;
+    width:700px;
+    min-height:200px;
+    // border:1px solid #ccc;
+}
+    
+.simple-editor-wrap{
+    width:100%;
+    border:1px solid rgb(214, 214, 214);
+    div,span,ul,li,a,i,button,p{
+        margin:0;
+        padding:0;
+        box-sizing: border-box;
+        text-decoration: none;
+    }
+    .simple-editor-header{
+       width:100%;
+       min-height:40px;
+       padding:0px 4px;
+       border-bottom:1px solid rgb(224, 224, 224);
+       background:rgb(243, 243, 243);
+       ul li{
+         list-style: none;
+       }
+       .simple-editor-ul{
+             width:100%;
+             display:flex;
+             flex-wrap: wrap;
+             >li{
+                position: relative;
+                width:40px;
+                height:40px;
+                margin:1px 1px;
+                .editor-a-btn{
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    width:40px;
+                    height:40px;
+                    text-align: center;
+                    cursor: pointer;
+                    i{
+                        color:rgb(128, 128, 128);
+                    }
+                    
+                }
+                .active{
+                    background:rgb(206, 206, 206);
+                    i{
+                        color:rgb(12, 12, 12);
+                    }
+                }
+                &:hover{
+                    background:rgb(233, 233, 233);
+                    .editor-a-btn{
+                        i{
+                            color:rgb(61, 61, 61);
+                        }
+                    }
+                    
+                }
+
+                // h1-h6 标签
+                .simple-editor-ul-h{
+                    display: none;
+                    position: absolute;
+                    z-index: 999;
+                    top:38px;
+                    left:-20px;
+                    width:80px;
+                    background:#fff;
+                    border:1px solid rgb(214, 214, 214);
+                    li{
+                        width:100%;
+                        padding:4px 0;
+                        a{
+                            display: block;
+                            width:100%;
+                            height:100%;
+                            text-align: center;
+                            color:#333;
+                        }
+                        &:hover{
+                            background:rgb(233, 233, 233);
+                            a{
+                               color:rgb(61, 61, 61);
+                            }
+                            
+                        }
+                        &:nth-of-type(1){
+                            a{
+                                padding:10px;
+                                font-size:16px;
+                            }
+                        }
+                    }
+                }
+
+                // 背景颜色
+                .simple-editor-wrap-bg{
+                    display: none;
+                    padding:5px;
+                    position: absolute;
+                    z-index: 999;
+                    top:38px;
+                    left:-45px;
+                    background:#fff;
+                    border:1px solid rgb(214, 214, 214);
+                    .simple-editor-ul-bg{
+                        width:124px;
+                        height:100%;
+                        padding-bottom:5px;
+                        li{
+                            display: inline-block;
+                            width:16px;
+                            height:16px;
+                            margin:0 2px;
+                            border:1px solid #eee;
+                            a{
+                                display: block;
+                                width:100%;
+                                height:100%;
+                                text-align: center;
+                                color:#333;
+                            }
+                        }
+                        .input-color{
+                            display: flex;
+                            align-items: center;
+                            width:100%;
+                            height:30px;
+           
+                            margin-top:4px;
+                            input{
+                                width:50%;
+                                outline: none;
+                            }
+                            p{
+                                cursor: pointer;
+                                padding:2px 4px;
+                                margin-left:5px;
+                                border:1px solid #409eff;
+                                background:#409eff;
+                                border-radius:4px;
+                                color:#fff;
+                                font-size:12px;
+                                &:active{
+                                    background:#278ff8;
+                                }
+                            }
+                        }
+                    }
+
+                }
+                // 字体颜色
+                .simple-editor-wrap-color{
+                    .simple-editor-wrap-bg;
+                }
+
+                // 字体样式
+                .simple-editor-ul-style{
+                    .simple-editor-ul-h;
+                }
+
+                // 字体大小
+                .simple-editor-ul-size{
+                    .simple-editor-ul-h;
+                }
+                // 超链接
+                .simple-editor-link{
+                    width:300px;
+                    padding:10px;
+                    position: absolute;
+                    z-index: 999;
+                    top:39px;
+                    left:-45px;
+                    background:#fff;
+                    border:1px solid rgb(214, 214, 214);
+                    .simple-editor-wrap{
+                        border:none;
+                        color:#333;
+                        .simple-editor-link-header{
+                            font-size:16px;
+                            border-bottom:1px solid #eee;
+                            padding:4px;
+
+                        }
+                        .simple-editor-link-text{
+                             width:100%;
+                             height:20px;
+                             margin:20px 0;
+                             input{
+                                width:100%;
+                                height:100%;
+                                border:none;
+                                outline: none;
+                                border-bottom:1px solid #ccc;
+                             }
+                        }
+                        .simple-editor-link-links{
+                            .simple-editor-link-text;
+                        }
+                        .simple-editor-link-btn{
+                           display:flex;
+                           justify-content: center;
+                           margin-top:30px;
+                           span{
+                                cursor: pointer;
+                                padding:5px 10px;
+                                margin-left:5px;
+                                border:1px solid #409eff;
+                                background:#409eff;
+                                border-radius:4px;
+                                color:#fff;
+                                font-size:14px;
+                                &:active{
+                                    background:#278ff8;
+                                }
+                           }
+                           .delete{
+                                border:1px solid #f35050;
+                                background:#f35050;
+                                &:active{
+                                    background:#f03a3a;
+                                }
+                           }
+                        }
+                    }
+                }
+               
+             }
+             
+            
+       }
+       
+    }
+    .simple-editor-body{
+       outline: none;
+       min-height: 100px;
+       margin-top:10px;
+       padding:10px;
+       div,span,ul,li,a,i,button,p{
+        margin:0;
+        padding:0;
+        box-sizing: border-box;
+        text-decoration: none;
+       }
+       ul,ol{
+         margin-left: 30px;
+       }
+       blockquote{
+           border-left:4px solid #ccc;
+           margin:10px 0;
+           padding-left:16px;
+       }
+      
+    }
+}
