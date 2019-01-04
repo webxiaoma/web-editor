@@ -1,157 +1,113 @@
 import $ from './utils/jq-utils'
 import initOptions from './options'
 import menusAry from './menus'
-
+import exceCom from './exceCommand'
 
 function Editor(el,options = {}){
     this.el = $(el,true);
     this.options = Object.assign(initOptions,options);
     this.currentRange = null;
-
-    return this.init()
+    this.com = null;  // 富文本功能
+    
+    return this._init()
 }
 
 Editor.fn = Editor.prototype = {
+    menus:[],
+
     // 初始化
-    init(){ 
-        let div = document.querySelectorAll("div")
-        // let div = document.createElement("div")
-        this.layout() // 样式构架
-        this.eventListening() // 事件监听
+    _init(){ 
+        this._initMenus() // 初始化菜单
+        this._layout() // 初始化样式构架
+        this._eventListening() // 初始化事件监听
+        this._execCom()  // 初始化富文本方法
+        return  this;
     },
 
-    // 初始化编辑器样式结构
-    layout(){
+    // 初始化菜单
+    _initMenus(){
+       this.menus = menusAry.map(item=>{
+           return new item(this)
+       })
+    },
+
+    // 初始化编辑器样式结构 
+    _layout(){
         let $editorWarp = $('<div>');
         let $editorHeader = $('<div>');
         let $editorBody = $('<div>');
-        let $editorUl = $("<ul>")
-        
+        let $editorUl = $("<ul>");
+
         $editorUl.addClass("simple-editor-ul")
         $editorHeader.addClass("simple-editor-header").append($editorUl)
         $editorBody.html("<div><br/></div>") // 回车以div换行问题
                    .addClass("simple-editor-body")
                    .attr("contentEditable",true)
+               
 
         $editorWarp.append($editorHeader)
                    .append($editorBody)
                    .addClass("simple-editor-wrap");
         
-                  
-        console.log(new menusAry[0](this).ele)
-        $editorUl.html(new menusAry[0](this).ele)
-
-        this.el.html("").append($editorWarp)
-        let editorStr = `<div class="simple-editor-wrap">
-                            <div class="simple-editor-header">
-                                <ul class="simple-editor-ul"></ul>
-                            </div>
-                            <div class="simple-editor-body" contenteditable="true">
-                                <div><br></div>
-                            </div>
-                         </div>`
-
-        
-         console.log(this.el.children(".simple-editor-body"))
+        // 循环添加菜单栏
+        for(let i=0,len=this.menus.length;i<len;i++){
+            $editorUl.append(this.menus[i].$ele)
+        }
        
-        // let keyAryLength = actionsKeys.length
-        // for(let i=0;i<keyAryLength;i++){
-        //    let actionsObj = actions[actionsKeys[i]]
-        //    let li = D.createElement("li");
-        //    let a = D.createElement("a");
-
-        //    a.title = actionsObj.title;
-        //    a.href = "javascript:;"
-        //    a.classList.add("editor-a-btn");
-        // //    a.onclick = actionsObj.actions;  // 采用有问题
-
-        //    // 使用on 来绑定事件
-        //    actionsObj.element = a;
-           
-
-        //    if(actionsObj.hoverLeave){
-        //      actionsObj.hoverLeave(li,this)
-        //    }
-
-        //    a.on("click",function(e){
-        //        if(!actionsObj.hoverLeave){
-        //          actionsObj.actions(this)
-        //        }
-        //    })
-
-        //    a.innerHTML = `<i class="iconfont ${actionsObj.icon}"></i>`;
-        //    li.append(a)
-        //    editorUl.append(li)
-        // }
-        // $editorWarp.classList.add("simple-editor-wrap")
-        // editorHeader.classList.add("simple-editor-header")
-        // editorUl.classList.add("simple-editor-ul")
-        // editorBody.innerHTML = "<div><br/></div>" // 回车以div换行问题
-        // editorBody.classList.add("simple-editor-body")
-        // editorBody.setAttribute("contentEditable",true)
-
-        // editorHeader.append(editorUl)
-        // $editorWarp.append(editorHeader)
-        // $editorWarp.append(editorBody)
-        // this.el.innerHTML = "";
-        // this.el.append($editorWarp)
+       this.el.html("").append($editorWarp)
     },
 
      // 事件监听
-    eventListening(){
+    _eventListening(){
         let $editorBody = this.el.children(".simple-editor-body")
 
         /**
-         * 监听input事件
+         * 模拟change事件 光标变化时会触发
          **/
-        $editorBody.on("input",(e)=>{
-            //  this.onchange(e.target.innerHTML)
-            var range = this.getCursor()
-            this.activeIcon(range) // 头部active 样式激活
-            this.options.onchange(e.target.innerHTML)
-        })
+        $editorBody.on("input  click",(e)=>{
 
-        /**
-         * 监听click事件
-         **/
-        $editorBody.on("click",()=>{
-            this.saveRange()// 保存光标状态
-            this.activeIcon(this.currentRange) // 头部active 样式激活
-            this.options.cursorChange(this.currentRange)
+            // 循环添加菜单栏
+            for(let i=0,len=this.menus.length;i<len;i++){
+                this.menus[i].changeStyle()
+            }
+            // this.options.onchange(e.target.innerHTML)
         })
 
          /**
          * 监听键盘事件
          **/
-        $editorBody.on("keyup",(e)=>{
-            this.saveRange() // 保存光标状态
-            // 监听回车
-            if(e.keyCode == 13&&this.getCursor().commonAncestorContainer.localName === "blockquote"){
-                this.changeTag("p")
-            }
+        // $editorBody.on("keyup",(e)=>{
+        //     this.saveRange() // 保存光标状态
+        //     // 监听回车
+        //     if(e.keyCode == 13&&this.getCursor().commonAncestorContainer.localName === "blockquote"){
+        //         this.changeTag("p")
+        //     }
 
-            //按下了删除键
-            if(e.keyCode === 8){
-                if(!this.innerHTML || this.innerHTML === "<br>"){
-                    // this.innerHTML = "<p><br/></p>"
-                    this.innerHTML = "<div><br/></div>"
-                }
-            }
-        })
+        //     //按下了删除键
+        //     if(e.keyCode === 8){
+        //         if(!this.innerHTML || this.innerHTML === "<br>"){
+        //             // this.innerHTML = "<p><br/></p>"
+        //             this.innerHTML = "<div><br/></div>"
+        //         }
+        //     }
+        // })
 
          /**
          * 监听blur事件
          **/
-        $editorBody.on("blur",(e)=>{
-            // 头部active
-            this.saveRange()
-            this.activeIcon(this.currentRange)
-        })
+        // $editorBody.on("blur",(e)=>{
+        //     // 头部active
+        //     this.saveRange()
+        //     this.activeIcon(this.currentRange)
+        // })
 
         return this
+    },
 
-
-       
+ 
+    // 扩展富文本 execCommand
+    _execCom(name,value=null){
+        this.com = exceCom
     },
 
      // 扩展功能
@@ -164,7 +120,7 @@ Editor.fn = Editor.prototype = {
 
 // 扩展功能
 Editor.fn.extends({
-
+     
 })
 
 export default Editor;

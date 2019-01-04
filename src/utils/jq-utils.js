@@ -12,25 +12,27 @@ function Dom(selector,bol){ // selector 为选择元素， bol为是否根元素
     
     // 返回 "#div" ".div" 或 创建新元素 如"<div>"
     if(typeof selector === 'string'){ 
-        var htmlReg = /^\<\w+\>$/
+    var htmlReg = /<(S*?)[^>]*>.*?|<.*?\/>/gim
+
+        // console.log(htmlReg.test(`<li>`))
         
-        if(htmlReg.test(selector)){ //创建新元素 如"<div>"
-            var html = selector.replace(/[\<\>]/ig,"")
-            return this.createEle(html)
+        if(htmlReg.test(selector)){ 
+           //创建新元素 如"<div>" "<div><li>12</li></div>" 不可以创建多节点的元素
+            return this.createEle(selector)
             
         }else{ // 返回 "#div" ".div" 
-            return this.querySelectorAll(selector)
+            return this._querySelectorAll(selector)
         }
     }
     
     // 是DOM元素节点
     if(selector.nodeType === 1){
-        this.singleEle(selector)
+        this._singleEle(selector)
         return this
     }
     // 是 NodeList 
-    if(this.isNodeList(selector)){
-         this.ListEle(selector)
+    if(this._isNodeList(selector)){
+         this._ListEle(selector)
     }
 }
 
@@ -47,7 +49,7 @@ Dom.prototype = {
     // 同jq html方法
     html(htmlStr){
        if(typeof htmlStr === "string" || typeof htmlStr === "number"){
-          this.forEachDom(dom=>{
+          this._forEachDom(dom=>{
               dom.innerHTML =  htmlStr
           })
        }
@@ -59,7 +61,7 @@ Dom.prototype = {
        if(typeof className === 'string'){
             let classList;
             // 遍历选中的每个元素
-            this.forEachDom(dom=>{
+            this._forEachDom(dom=>{
                classList = dom.className.split(" ")
                classList = classList.filter(name=>{
                    if(name){
@@ -82,7 +84,7 @@ Dom.prototype = {
         if(typeof className === 'string'){
             let classList;
             // 遍历选中的每个元素
-            this.forEachDom(dom=>{
+            this._forEachDom(dom=>{
                classList = dom.className.split(" ")
 
                // 过滤class
@@ -98,7 +100,7 @@ Dom.prototype = {
     },
     // 只能append jqDom元素
     append(html){
-        this.forEachDom(dom=>{
+        this._forEachDom(dom=>{
             for(let i=0;i<html.length;i++){
                 dom.appendChild(html[i])
             }
@@ -110,14 +112,15 @@ Dom.prototype = {
         if (!val) { // 获取值
             return this[0].getAttribute(key)
         } else { // 设置值
-            return this.forEachDom(dom => {
+            return this._forEachDom(dom => {
                 dom.setAttribute(name, val)
             })
         }
     },
     // 绑定监听事件
     on(eventName,selector,callback){
-        return  this.forEachDom(dom => {
+        let eventAry = eventName.trim().split(/\s+/ig)
+        return  this._forEachDom(dom => {
             if(callback){ // 第三个参数是否存在
                 
                 // 判断selector 是否是jqDom
@@ -125,18 +128,23 @@ Dom.prototype = {
                     selector = selector[0]
                 }
                 // 代理
-                dom.addEventListener(eventName,function(e){
-                    var target = e.target
-               
-                    if(target === selector){
-                         callback.call(target,e)
-                    }
+                eventAry.forEach(name=>{
+                    dom.addEventListener(name,function(e){
+                        var target = e.target
+                   
+                        if(target === selector){
+                             callback.call(target,e)
+                        }
+                    })
                 })
+               
             }else{
                 // 非代理
                 callback = selector
-                dom.addEventListener(eventName,function(e){
-                    callback.call(this,e)
+                eventAry.forEach(name=>{
+                    dom.addEventListener(name,function(e){
+                        callback.call(this,e)
+                    })
                 })
             }
 
@@ -145,10 +153,12 @@ Dom.prototype = {
 
     // 取消监听事件
     off(eventName,callback){
-        return this.forEachDom(dom => {
-            dom.removeEventListener(eventName,callback)
+        let eventAry = eventName.trim().split(/\s+/ig)
+        return this._forEachDom(dom => {
+            eventAry.forEach(name=>{
+               dom.removeEventListener(name,callback)
+            })
         })
-      
     },
 
     // 修改css
@@ -181,22 +191,22 @@ Dom.fn = Dom.prototype
 
 Dom.fn.extends({
     // 扩展querySelectorAll 选择器
-    querySelectorAll(selector){
+    _querySelectorAll(selector){
         var eleAll = D.querySelectorAll(selector)
         var length = eleAll.length;
         if(length === 1){
-            this.singleEle(eleAll)
+            this._singleEle(eleAll)
         }else if(length > 1){
-            this.ListEle(eleAll)
+            this._ListEle(eleAll)
         }
     },
     // 单个元素包装真实DOM元素为$ 元素
-    singleEle(ele){
+    _singleEle(ele){
         this[0] = ele[0]
         this.length = 1;
     },
     // nodeList元素包装真实DOM元素为$ 元素
-    ListEle(ele){
+    _ListEle(ele){
         var length = ele.length;
         for(let i = 0; i<length; i++){
             this[i] = ele[i]
@@ -204,7 +214,7 @@ Dom.fn.extends({
         this.length = length
     },
     // 判断是否是NodeList 对象
-    isNodeList(selector){
+    _isNodeList(selector){
         if (!selector) {
             return false
         }
@@ -215,7 +225,7 @@ Dom.fn.extends({
     },
 
     // 遍历$ 元素 操作相应Dom
-    forEachDom(callback){
+    _forEachDom(callback){
         for(let i=0;i<this.length;i++){
             callback(this[i])
         }
@@ -223,13 +233,14 @@ Dom.fn.extends({
     },
     // 创建元素
     createEle(ele){
-        let element = D.createElement(ele)
-        this[0] = element;
+        let div = D.createElement('div');
+        div.innerHTML = ele;
+        
+        this[0] = div.children[0];
         this.length = 1;
-
+        
         return this
-    }
-     
+    },
    
 })
 

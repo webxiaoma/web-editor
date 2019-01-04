@@ -18,7 +18,8 @@
 .simple-editor-wrap a,
 .simple-editor-wrap i,
 .simple-editor-wrap button,
-.simple-editor-wrap p {
+.simple-editor-wrap p,
+.simple-editor-wrap ol {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
