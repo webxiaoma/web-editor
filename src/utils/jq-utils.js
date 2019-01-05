@@ -12,9 +12,18 @@ function Dom(selector,bol){ // selector 为选择元素， bol为是否根元素
     
     // 返回 "#div" ".div" 或 创建新元素 如"<div>"
     if(typeof selector === 'string'){ 
-    var htmlReg = /<(S*?)[^>]*>.*?|<.*?\/>/gim
-
-        // console.log(htmlReg.test(`<li>`))
+        // 判断是否是html标签
+        var htmlReg = /<(S*?)[^>]*>.*?|<.*?\/>/gim
+        // 判断是否是id
+        var idReg = /^#/
+        
+        // 处理选择器为id的
+        if(idReg.test(selector)){
+            let idName = selector.replace(idReg,"")
+            this[0] = D.getElementById(idName)
+            this.length = 1;
+            return this
+        }
         
         if(htmlReg.test(selector)){ 
            //创建新元素 如"<div>" "<div><li>12</li></div>" 不可以创建多节点的元素
@@ -30,10 +39,15 @@ function Dom(selector,bol){ // selector 为选择元素， bol为是否根元素
         this._singleEle(selector)
         return this
     }
+
     // 是 NodeList 
     if(this._isNodeList(selector)){
+     
          this._ListEle(selector)
+         return this
     }
+
+    return this
 }
 
 
@@ -110,7 +124,7 @@ Dom.prototype = {
     // 添加获取属性
     attr(name,val){
         if (!val) { // 获取值
-            return this[0].getAttribute(key)
+            return this[0].getAttribute(name)
         } else { // 设置值
             return this._forEachDom(dom => {
                 dom.setAttribute(name, val)
@@ -121,8 +135,8 @@ Dom.prototype = {
     on(eventName,selector,callback){
         let eventAry = eventName.trim().split(/\s+/ig)
         return  this._forEachDom(dom => {
+
             if(callback){ // 第三个参数是否存在
-                
                 // 判断selector 是否是jqDom
                 if(selector.jqDom){
                     selector = selector[0]
@@ -140,10 +154,11 @@ Dom.prototype = {
                
             }else{
                 // 非代理
-                callback = selector
+                let  callbackFun = selector
+
                 eventAry.forEach(name=>{
                     dom.addEventListener(name,function(e){
-                        callback.call(this,e)
+                        callbackFun.call(this,e)
                     })
                 })
             }
@@ -161,16 +176,44 @@ Dom.prototype = {
         })
     },
 
-    // 修改css
-    css(){
+    // hover 事件
+    hover(senter=()=>{},leave=()=>{}){
+       this.on("mouseenter",(e)=>{
+           senter.call(e.target,e)
+       })
 
+       this.on("mouseleave",(e)=>{
+           leave.call(e.target,e)
+       })
+    },
+
+    // 修改css
+    css(style,val){
+        return this._forEachDom(dom => {
+           if(typeof style === 'string'){ 
+              dom.style[style] = val;
+           }
+           
+           if(typeof style === 'object'){ 
+              for(item of style){
+                  dom.style[item] = style[item]
+              }
+           }
+        })
     },  
+    // 元素显示
+    show(){
+        this.css("display","block")
+    },
+    // 元素隐藏
+    hide(){
+        this.css("display","none")
+    },
 
     // 循环遍历
     foreach(){
 
     },
-
     // 获取子元素
     children(ele){
         if(ele){ 
@@ -179,6 +222,126 @@ Dom.prototype = {
            return $(this[0].children)
         }
         
+    },
+    // 获取祖先元素
+    parents(ele){
+       let parentsAry = [],
+           currentEle = this[0],
+           _that = this;
+        
+       function eachParent(element){
+           var parentEle = element.parentElement
+           if(ele){
+                if(parentEle&&parentEle.nodeType === 1){ // 是节点
+                     // 判断是否是id或class 还是 tag
+                     var  flag = _that._isIdOrClassOrTag(ele)
+                     if(flag === 1){ // id
+                         if(_that._isIncludeId(parentEle,ele)){
+                            parentsAry.push(parentEle)
+                         }    
+                     }
+                     if(flag === 2){ // class
+                         if(_that._isIncludeClass(parentEle,ele)){
+                            parentsAry.push(parentEle)
+                         }
+                         eachParent(parentEle)
+                     }
+                     if(flag === 3){  //tag
+                         if(parentEle.localName === ele.trim()){
+                           parentsAry.push(parentEle)
+                         }
+                         eachParent(parentEle)
+                     }
+                }
+           }else{
+                if(parentEle&&parentEle.nodeType === 1){ // 是节点
+                    parentsAry.push(parentEle)
+                    eachParent(parentEle)
+                }
+           }
+       }
+       eachParent(currentEle);
+       
+       delete this[0]
+       for(var i = 0,len=parentsAry.length;i<len;i++){
+           this[i] = parentsAry[i]
+       }
+       this.length = len;
+       return this;
+
+    },
+    // 获取同胞元素
+    siblings(ele){
+       let siblingsAry = []
+       let currentEle = this[0];
+       let _that = this
+
+       // 遍历上级
+       function siblingPrev(curEle){
+            var prev = curEle.prev()
+
+            if(ele){ 
+                if(prev[0]&&prev[0].nodeType === 1){
+                    // 判断是否是id或class 还是 tag
+                    var  flag = _that._isIdOrClassOrTag(ele)
+
+                    if(flag === 2){ // class
+                        if(_that._isIncludeClass(prev,ele)){
+                            parentsAry.push(parentEle)
+                        }
+                    }
+                    if(flag === 3){ // tag
+                        if(prev[0].localName === ele.trim()){
+                            parentsAry.push(parentEle)
+                        }
+                    }
+
+                    siblingPrev(prev)
+                }
+                
+
+
+            }else{
+                if(prev[0]&&prev[0].nodeType === 1){
+                    siblingsAry.push(prev[0])
+                    siblingPrev(prev)
+                }
+            }
+       }
+       siblingPrev(this)
+
+       // 遍历下级
+       
+
+  
+       
+       return this
+    },
+    // 上边的同胞元素
+    prev(){
+       let currentEle = this[0];
+       let prevEle = currentEle.previousElementSibling
+
+       delete this[0]
+
+       if(prevEle&&prevEle.nodeType === 1){
+           this[0] = prevEle
+           this.length = 1
+       }
+       return this
+    },
+    // 下边的同胞元素
+    next(){
+        let currentEle = this[0];
+        let nextEle = currentEle.nextElementSibling
+
+        delete this[0]
+        if(nextEle&&nextEle.nodeTyp === 1){
+            this[0] = nextEle
+            this.length = 1
+        }
+
+        return this
     }
 }
 
@@ -202,7 +365,7 @@ Dom.fn.extends({
     },
     // 单个元素包装真实DOM元素为$ 元素
     _singleEle(ele){
-        this[0] = ele[0]
+        this[0] = ele
         this.length = 1;
     },
     // nodeList元素包装真实DOM元素为$ 元素
@@ -212,6 +375,7 @@ Dom.fn.extends({
             this[i] = ele[i]
         }
         this.length = length
+        return this
     },
     // 判断是否是NodeList 对象
     _isNodeList(selector){
@@ -241,6 +405,52 @@ Dom.fn.extends({
         
         return this
     },
+
+    // 判断是包含class
+    _isIncludeClass(ele,value){
+        let classList = ele.jqDom?ele[0].classList:ele.classList
+        let newValue = value.trim().replace(/^\./,"")
+        let result = false;
+
+        for(var i = 0, len=classList.length;i<len;i++){
+            if(classList[i] === newValue){
+                result = true;
+                break;
+            }
+        }
+
+        return result;
+    },
+    // 判断是否包含id
+    _isIncludeId(ele,value){
+        var result = false;
+        var idStr = ele.jqDom?ele.attr("id"):$(ele).attr("id")
+        var newValue = value.trim().replace(/^#/,"")
+        var idAry = idStr.trim().split(/\s+/ig)
+
+        for(var i = 0,len=idAry.length;i<len;i++){
+            if(idAry[i] === newValue){
+                result = true;
+                break;
+            } 
+        }
+
+        return result;
+    },
+    // 判断是Id 1  还是class 2  否则是tag 3
+    _isIdOrClassOrTag(nameStr){
+        var result = 3;
+        var trimEle = nameStr.trim()
+        if(/^#/.test(trimEle)){ // id
+            result = 1;
+        }
+        if(/^\./.test(trimEle)){ // class
+            result = 2;
+        }
+
+
+        return result;
+    }
    
 })
 

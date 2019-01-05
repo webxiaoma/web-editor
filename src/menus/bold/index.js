@@ -24,11 +24,13 @@ Bold.prototype = Object.assign(Bold.prototype,{
       
     },
     click(e){ // 点击事件
-        this.editor.com.exce("bold")
+        document.execCommand('styleWithCSS', null, true)
+
+        this.editor.command.exce("bold")
         this.changeStyle()
     },
     changeStyle(){ // 添加激活样式
-       let bol = this.editor.com.getState("bold");
+       let bol = this.editor.command.getState("bold");
        let $a = this.$ele.children("a")
 
        bol?$a.addClass("active"):$a.removeClass("active")

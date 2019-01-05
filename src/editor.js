@@ -1,13 +1,13 @@
 import $ from './utils/jq-utils'
 import initOptions from './options'
 import menusAry from './menus'
-import exceCom from './exceCommand'
+import Command from './exceCommand'
 
 function Editor(el,options = {}){
     this.el = $(el,true);
     this.options = Object.assign(initOptions,options);
     this.currentRange = null;
-    this.com = null;  // 富文本功能
+    this.command = new Command(this);  // 富文本功能
     
     return this._init()
 }
@@ -17,10 +17,10 @@ Editor.fn = Editor.prototype = {
 
     // 初始化
     _init(){ 
+        // 顺序不可颠倒
         this._initMenus() // 初始化菜单
         this._layout() // 初始化样式构架
         this._eventListening() // 初始化事件监听
-        this._execCom()  // 初始化富文本方法
         return  this;
     },
 
@@ -102,12 +102,6 @@ Editor.fn = Editor.prototype = {
         // })
 
         return this
-    },
-
- 
-    // 扩展富文本 execCommand
-    _execCom(name,value=null){
-        this.com = exceCom
     },
 
      // 扩展功能

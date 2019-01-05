@@ -25,7 +25,7 @@ function Title(editor){
                             <a href="javascript:;">
                                 <h3>h3</h3>
                             </a>
-                        </li><li data-h="h4">
+                        </li><li data-h="h4"  class="aaaa">
                             <a href="javascript:;">
                                 <h4>h4</h4>
                             </a>
@@ -43,25 +43,43 @@ function Title(editor){
 Title.prototype = Object.assign(Title.prototype,{ 
     init(){
        let $ele = this.$ele
-       // 绑定click
-   
        this.hover()
+       this.click()
     },
     click(e){ // 点击事件
-        // this.editor.com.exce("bold")
-        // this.changeStyle()
+       let _that = this
+       this.$ele.children(".simple-editor-ul-h li").on("click",function(e){
+            var tag = $(this).attr("data-h") || "<p>"
+ 
+            _that.editor.command.exce("formatBlock",tag);
+          
+            _this.changeStyle()
+            _that.$ele.children(".simple-editor-ul-h").hide()
+       })
     },
     hover(){ // hover 事件
-        console.log(this.$ele.children(".simple-editor-ul-h"))
-        this.$ele.children(".simple-editor-ul-h").on("click",()=>{
-            console.log(111)
+        this.$ele.children(".aaaa").siblings() //aa
+
+        this.$ele.hover(function(){
+            $(this).children(".simple-editor-ul-h")
+                   .show()
+        },function(){
+            $(this).children(".simple-editor-ul-h")
+                   .hide()
         })
     },
     changeStyle(){ // 添加激活样式
-    //    let bol = this.editor.com.getState("bold");
-    //    let $a = this.$ele.children("a")
+        var bol = this.editor.command.getStyle("formatBlock");
+        var bolAry = bol.split("");
+        if(bolAry[0] === "h"){
+            this.$ele.children(".editor-a-btn").addClass("active")
+        }else{
+            this.$ele.children(".editor-a-btn").removeClass("active")
+        }
 
-    //    bol?$a.addClass("active"):$a.removeClass("active")
+
+
+
     }
 
 })
