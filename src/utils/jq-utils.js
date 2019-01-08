@@ -40,9 +40,8 @@ function Dom(selector,bol){ // selector 为选择元素， bol为是否根元素
         return this
     }
 
-    // 是 NodeList 
-    if(this._isNodeList(selector)){
-     
+    // 是 NodeList  或 是数组[node,node,node]
+    if(this._isNodeList(selector) || Array.isArray(selector)){
          this._ListEle(selector)
          return this
     }
@@ -210,9 +209,14 @@ Dom.prototype = {
         this.css("display","none")
     },
 
-    // 循环遍历
-    foreach(){
+    // each循环遍历
+    each(callback){
 
+        for(let i=0;i<this.length;i++){
+            callback($(this[i]))
+        }
+
+        return this
     },
     // 获取子元素
     children(ele){
@@ -262,12 +266,14 @@ Dom.prototype = {
        }
        eachParent(currentEle);
        
-       delete this[0]
-       for(var i = 0,len=parentsAry.length;i<len;i++){
-           this[i] = parentsAry[i]
-       }
-       this.length = len;
-       return this;
+
+       return $(parentsAry)
+    //    let len=parentsAry.length;
+    //    for(var i = 0;i<len;i++){
+    //        this[i] = parentsAry[i]
+    //    }
+    //    this.length = len;
+    //    if(len) return this;
 
     },
     // 获取同胞元素
@@ -278,70 +284,107 @@ Dom.prototype = {
 
        // 遍历上级
        function siblingPrev(curEle){
-            var prev = curEle.prev()
-
+            var prev = curEle.previousElementSibling;
             if(ele){ 
-                if(prev[0]&&prev[0].nodeType === 1){
+                // 遍历上级
+                if(prev&&prev.nodeType === 1){
                     // 判断是否是id或class 还是 tag
                     var  flag = _that._isIdOrClassOrTag(ele)
 
                     if(flag === 2){ // class
                         if(_that._isIncludeClass(prev,ele)){
-                            parentsAry.push(parentEle)
+                            siblingsAry.push(prev)
                         }
                     }
                     if(flag === 3){ // tag
-                        if(prev[0].localName === ele.trim()){
-                            parentsAry.push(parentEle)
+                        if(prev.localName === ele.trim()){
+                            siblingsAry.push(prev)
                         }
                     }
 
                     siblingPrev(prev)
                 }
-                
-
-
             }else{
-                if(prev[0]&&prev[0].nodeType === 1){
-                    siblingsAry.push(prev[0])
+
+                // 遍历上级
+                if(prev&&prev.nodeType === 1){
+                    siblingsAry.push(prev)
                     siblingPrev(prev)
                 }
+
             }
-       }
-       siblingPrev(this)
 
-       // 遍历下级
-       
+        }
+        siblingPrev(currentEle)
 
-  
-       
-       return this
+        // 遍历下级
+        siblingNext(currentEle)
+        function siblingNext(curEle){
+            var next = curEle.nextElementSibling;
+            if(ele){ 
+                // 遍历下级
+                if(next&&next.nodeType === 1){
+                    // 判断是否是id或class 还是 tag
+                    var  flag = _that._isIdOrClassOrTag(ele)
+
+                    if(flag === 2){ // class
+                        if(_that._isIncludeClass(next,ele)){
+                            siblingsAry.push(next)
+                        }
+                    }
+                    if(flag === 3){ // tag
+                        if(next.localName === ele.trim()){
+                            siblingsAry.push(next)
+                        }
+                    }
+
+                    siblingNext(next)
+                }
+
+            }else{
+                // 遍历下级
+                if(next&&next.nodeType === 1){
+
+                    siblingsAry.push(next)
+                    siblingNext(next)
+                }
+            }
+        }
+
+        return $(siblingsAry)
     },
     // 上边的同胞元素
     prev(){
        let currentEle = this[0];
        let prevEle = currentEle.previousElementSibling
 
-       delete this[0]
+       return $(prevEle)
 
-       if(prevEle&&prevEle.nodeType === 1){
-           this[0] = prevEle
-           this.length = 1
-       }
-       return this
+
+    //    delete this[0]
+    //    this.length = 0
+    //    if(prevEle&&prevEle.nodeType === 1){
+    //        this[0] = prevEle
+    //        this.length = 1
+    //    }
+    //    return this
+
+
     },
     // 下边的同胞元素
     next(){
         let currentEle = this[0];
         let nextEle = currentEle.nextElementSibling
+        return $(prevEle)
 
-        delete this[0]
-        if(nextEle&&nextEle.nodeTyp === 1){
-            this[0] = nextEle
-            this.length = 1
-        }
-
-        return this
+        // delete this[0]
+        // this.length = 0
+        // if(nextEle&&nextEle.nodeTyp === 1){
+        //     this[0] = nextEle
+        //     this.length = 1
+           
+        // }
+        // return this
     }
 }
 
@@ -450,6 +493,27 @@ Dom.fn.extends({
 
 
         return result;
+    },
+    _returnThis(ele){
+        if(!ele || ele.length == 0){
+            delete this[0]
+            this.length = 0;
+        }
+
+        if(Array.isArray(ele)&&ele.length>1){
+            let len = ele.length
+            for(let i = 0; i<len; i++){
+                this[i] = ele[i]
+            }
+            this.length = len
+        }
+
+        if(ele&&ele.length == 1){
+           this[0] = ele;
+           this.length = 1;
+        }
+
+        return this
     }
    
 })

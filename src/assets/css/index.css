@@ -11,6 +11,18 @@
   width: 100%;
   border: 1px solid #d6d6d6;
 }
+.simple-editor-wrap h1,
+.simple-editor-wrap h2,
+.simple-editor-wrap h3,
+.simple-editor-wrap h4,
+.simple-editor-wrap h5,
+.simple-editor-wrap h6 {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  text-decoration: none;
+  font-weight: 500;
+}
 .simple-editor-wrap div,
 .simple-editor-wrap span,
 .simple-editor-wrap ul,
@@ -342,6 +354,18 @@
   min-height: 100px;
   margin-top: 10px;
   padding: 10px;
+}
+.simple-editor-wrap .simple-editor-body h1,
+.simple-editor-wrap .simple-editor-body h2,
+.simple-editor-wrap .simple-editor-body h3,
+.simple-editor-wrap .simple-editor-body h4,
+.simple-editor-wrap .simple-editor-body h5,
+.simple-editor-wrap .simple-editor-body h6 {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  text-decoration: none;
+  font-weight: 500;
 }
 .simple-editor-wrap .simple-editor-body div,
 .simple-editor-wrap .simple-editor-body span,

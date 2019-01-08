@@ -2,12 +2,14 @@ import $ from './utils/jq-utils'
 import initOptions from './options'
 import menusAry from './menus'
 import Command from './exceCommand'
+import Range from './selection';
 
 function Editor(el,options = {}){
     this.el = $(el,true);
     this.options = Object.assign(initOptions,options);
     this.currentRange = null;
     this.command = new Command(this);  // 富文本功能
+    this.range = new Range(this); // 光标对象
     
     return this._init()
 }
@@ -65,7 +67,6 @@ Editor.fn = Editor.prototype = {
          * 模拟change事件 光标变化时会触发
          **/
         $editorBody.on("input  click",(e)=>{
-
             // 循环添加菜单栏
             for(let i=0,len=this.menus.length;i<len;i++){
                 this.menus[i].changeStyle()
@@ -95,11 +96,10 @@ Editor.fn = Editor.prototype = {
          /**
          * 监听blur事件
          **/
-        // $editorBody.on("blur",(e)=>{
-        //     // 头部active
-        //     this.saveRange()
-        //     this.activeIcon(this.currentRange)
-        // })
+        $editorBody.on("blur",(e)=>{
+            this.range.saveRange()
+            console.log(this.range)
+        })
 
         return this
     },

@@ -17,15 +17,18 @@ function Title(editor){
                             <a href="javascript:;">
                                 <h1>h1</h1>
                             </a>
-                        </li><li data-h="h2">
+                        </li>
+                        <li data-h="h2">
                             <a href="javascript:;">
                                 <h2>h2</h2>
                             </a>
-                        </li><li data-h="h3">
+                        </li>
+                        <li data-h="h3">
                             <a href="javascript:;">
                                 <h3>h3</h3>
                             </a>
-                        </li><li data-h="h4"  class="aaaa">
+                        </li>
+                        <li data-h="h4"  class="aaaa">
                             <a href="javascript:;">
                                 <h4>h4</h4>
                             </a>
@@ -42,7 +45,6 @@ function Title(editor){
 
 Title.prototype = Object.assign(Title.prototype,{ 
     init(){
-       let $ele = this.$ele
        this.hover()
        this.click()
     },
@@ -53,13 +55,11 @@ Title.prototype = Object.assign(Title.prototype,{
  
             _that.editor.command.exce("formatBlock",tag);
           
-            _this.changeStyle()
+            _that.changeStyle()
             _that.$ele.children(".simple-editor-ul-h").hide()
        })
     },
     hover(){ // hover 事件
-        this.$ele.children(".aaaa").siblings() //aa
-
         this.$ele.hover(function(){
             $(this).children(".simple-editor-ul-h")
                    .show()
@@ -71,14 +71,22 @@ Title.prototype = Object.assign(Title.prototype,{
     changeStyle(){ // 添加激活样式
         var bol = this.editor.command.getStyle("formatBlock");
         var bolAry = bol.split("");
+
         if(bolAry[0] === "h"){
             this.$ele.children(".editor-a-btn").addClass("active")
         }else{
             this.$ele.children(".editor-a-btn").removeClass("active")
+            this.$ele.children(".simple-editor-ul-h li").removeClass('active')
         }
 
-
-
+        this.$ele.children(".simple-editor-ul-h li").each(dom=>{
+            var dataH = dom.attr("data-h")
+            if(dataH&&bol === dataH){
+                dom.addClass("active")
+                   .siblings("li")
+                   .removeClass("active")
+            }
+        })
 
     }
 
