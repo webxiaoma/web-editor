@@ -7,7 +7,6 @@ import Range from './selection';
 function Editor(el,options = {}){
     this.el = $(el,true);
     this.options = Object.assign(initOptions,options);
-    this.currentRange = null;
     this.command = new Command(this);  // 富文本功能
     this.range = new Range(this); // 光标对象
     
@@ -98,7 +97,7 @@ Editor.fn = Editor.prototype = {
          **/
         $editorBody.on("blur",(e)=>{
             this.range.saveRange()
-            console.log(this.range)
+            // console.log(this.range)
         })
 
         return this
@@ -114,6 +113,9 @@ Editor.fn = Editor.prototype = {
 
 // 扩展功能
 Editor.fn.extends({
+    focus(){
+        $(".simple-editor-body").focus()
+    }
      
 })
 

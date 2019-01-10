@@ -61,6 +61,10 @@ Dom.prototype = {
 
     // 同jq html方法
     html(htmlStr){
+       if(!htmlStr&&htmlStr !== ""){
+          return this[0].innerHTML
+       }
+
        if(typeof htmlStr === "string" || typeof htmlStr === "number"){
           this._forEachDom(dom=>{
               dom.innerHTML =  htmlStr
@@ -68,7 +72,19 @@ Dom.prototype = {
        }
        return this
     },
+    // 获取元素文本内容
+    text(textStr){
+        if(!textStr&&textStr !== ""){
+            return this[0].innerText
+        }
 
+        if(typeof textStr === "string" || typeof textStr === "number"){
+            this._forEachDom(dom=>{
+                dom.innerText =  textStr
+            })
+         }
+         return this
+    },
     // 添加class
     addClass(className){
        if(typeof className === 'string'){
@@ -120,6 +136,28 @@ Dom.prototype = {
          })
          return this;
     },
+    // 替换元素节点
+    replaceNode(oldNode,newNode){
+        if(!this._isNode(oldNode)){
+            return new Error("请求输入节点")
+        }
+        // debugger
+        var $parentNode = $(oldNode).parent()[0]
+        
+        //newNode 是节点
+        if(this._isNode(newNode)){ 
+            $parentNode.replaceChild(oldNode,newNode)
+        }
+
+        // newNode 是字符串
+        if(typeof newNode === 'string'){
+            let div = D.createElement('div')
+            div.innerHTML = newNode;
+            $parentNode.replaceChild(div.firstElementChild,oldNode)
+        }
+
+        return this
+    },
     // 添加获取属性
     attr(name,val){
         if (!val) { // 获取值
@@ -129,6 +167,23 @@ Dom.prototype = {
                 dom.setAttribute(name, val)
             })
         }
+    },
+    // 获取input value值
+    val(value){
+        if(!value&&value !== ""){
+            return this[0].value
+        }
+        if(typeof value === "string" || typeof value === "number"){
+            return this._forEachDom(dom=>{
+                dom.value = value
+            })
+        }
+        
+    },
+    // input 获取焦点事件
+    focus(){
+       this[0].focus()
+       return this;
     },
     // 绑定监听事件
     on(eventName,selector,callback){
@@ -276,6 +331,12 @@ Dom.prototype = {
     //    if(len) return this;
 
     },
+    // 获取父元素
+    parent(){
+       if(this[0]){
+          return $(this[0].parentNode)
+       }
+    },
     // 获取同胞元素
     siblings(ele){
        let siblingsAry = []
@@ -360,31 +421,12 @@ Dom.prototype = {
 
        return $(prevEle)
 
-
-    //    delete this[0]
-    //    this.length = 0
-    //    if(prevEle&&prevEle.nodeType === 1){
-    //        this[0] = prevEle
-    //        this.length = 1
-    //    }
-    //    return this
-
-
     },
     // 下边的同胞元素
     next(){
         let currentEle = this[0];
         let nextEle = currentEle.nextElementSibling
-        return $(prevEle)
-
-        // delete this[0]
-        // this.length = 0
-        // if(nextEle&&nextEle.nodeTyp === 1){
-        //     this[0] = nextEle
-        //     this.length = 1
-           
-        // }
-        // return this
+        return $(nextEle)
     }
 }
 
@@ -401,7 +443,7 @@ Dom.fn.extends({
         var eleAll = D.querySelectorAll(selector)
         var length = eleAll.length;
         if(length === 1){
-            this._singleEle(eleAll)
+            this._singleEle(eleAll[0])
         }else if(length > 1){
             this._ListEle(eleAll)
         }
@@ -410,6 +452,7 @@ Dom.fn.extends({
     _singleEle(ele){
         this[0] = ele
         this.length = 1;
+        return this
     },
     // nodeList元素包装真实DOM元素为$ 元素
     _ListEle(ele){
@@ -419,6 +462,10 @@ Dom.fn.extends({
         }
         this.length = length
         return this
+    },
+    // 判断是否是dom节点
+    _isNode(ele){
+       return ele.nodeType === 1 // dom 节点
     },
     // 判断是否是NodeList 对象
     _isNodeList(selector){
@@ -519,6 +566,7 @@ Dom.fn.extends({
 })
 
 
+$.utils = Dom.prototype
 
 export default function $(selector,el){
    return new Dom(selector,el)
